@@ -1,9 +1,9 @@
-import initialFriends from "./Friends_db.jsx";
+import { useState } from "react";
 
-export function FriendsList() {
+export function FriendsList({ friends }) {
   return (
     <ul>
-      {initialFriends.map((friend) => (
+      {friends.map((friend) => (
         <Friend key={friend.id} friend={friend} />
       ))}
     </ul>
@@ -32,20 +32,57 @@ function Friend({ friend }) {
   );
 }
 
-export function Button({ children }) {
-  return <button className="button">{children}</button>;
+export function Button({ children, onClick }) {
+  return (
+    <button className="button" onClick={onClick}>
+      {children}
+    </button>
+  );
 }
 
-export function FormAddFriend() {
+export function FormAddFriend({ onAddFriend }) {
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("https://i.pravatar.cc/48");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const id = crypto.randomUUID();
+
+    const newFriend = {
+      id,
+      name,
+      image: `${image}?=${id}`,
+      balance: 0,
+    };
+
+    onAddFriend(newFriend);
+
+    setName("");
+    setImage("https://i.pravatar.cc/48");
+  }
+
   return (
-    <form className="form-add-friend">
+    <form className="form-add-friend" onSubmit={handleSubmit}>
       <label>Friend Name</label>
-      <input type="text" placeholder="Enter a name" required />
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter a name"
+        required
+      />
 
       <label>Image URL</label>
-      <input type="text" placeholder="Enter a URL" required />
+      <input
+        type="text"
+        value={image}
+        onChange={(e) => setImage(e.target.value)}
+        placeholder="Enter a URL"
+        required
+      />
 
-      <Button>Add Friend</Button>
+      <Button onClick={() => {}}>Add Friend</Button>
     </form>
   );
 }
